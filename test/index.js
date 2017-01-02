@@ -145,16 +145,57 @@ describe("babel-preset-env", () => {
     });
 
     it("doesn't throw when specifiying a decimal for node", () => {
-      let targets;
       const plugin = {
         node: 6
       };
 
-      targets = {
+      const targets = {
         "node": 6.5
       };
 
       assert.doesNotThrow(() => {
+        babelPresetEnv.isPluginRequired(targets, plugin);
+      }, Error);
+    });
+
+    it("doesn't throw when specifiying a string for node", () => {
+      const plugin = {
+        node: 6
+      };
+
+      const targets = {
+        "node": "6.5"
+      };
+
+      assert.doesNotThrow(() => {
+        babelPresetEnv.isPluginRequired(targets, plugin);
+      }, Error);
+    });
+
+    it("will throw if target version is not a correct string", () => {
+      const plugin = {
+        "node": 6
+      };
+
+      const targets = {
+        "node": "six"
+      };
+
+      assert.throws(() => {
+        babelPresetEnv.isPluginRequired(targets, plugin);
+      }, Error);
+    });
+
+    it("will throw if target version is not a number and a string", () => {
+      const plugin = {
+        "node": 6
+      };
+
+      const targets = {
+        "node": {}
+      };
+
+      assert.throws(() => {
         babelPresetEnv.isPluginRequired(targets, plugin);
       }, Error);
     });

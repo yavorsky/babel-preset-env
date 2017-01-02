@@ -25,6 +25,19 @@ export const validIncludesAndExcludes = [
   ...defaultInclude
 ];
 
+const checkVersion = (version, environment) => {
+  if (typeof version === "number") {
+    return version;
+  } else if (typeof version === "string") {
+    let parsedVersion = parseFloat(version);
+    if (!isNaN(parsedVersion)) {
+      return parsedVersion;
+    }
+  }
+  throw new Error(`Target version must be a number or a correct string, 
+    '${version}' was given for '${environment}'`);
+};
+
 /**
  * Determine if a transformation is required
  * @param  {Object}  supportedEnvironments  An Object containing environment keys and the lowest
@@ -48,7 +61,7 @@ export const isPluginRequired = (supportedEnvironments, plugin) => {
       if (!plugin[environment]) { return true; }
 
       const lowestImplementedVersion = plugin[environment];
-      const lowestTargetedVersion = supportedEnvironments[environment];
+      const lowestTargetedVersion = checkVersion(supportedEnvironments[environment], environment);
 
       if (lowestTargetedVersion < lowestImplementedVersion) {
         return true;
